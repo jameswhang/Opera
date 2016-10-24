@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 import requests
 import json
 
@@ -6,8 +6,11 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return 'test'
+    return render_template('test.html')
 
+@app.route('/health')
+def health():
+    return 'Hello from Opera!'
 
 @app.route('/count_push/<username>', methods=['GET'])
 def count_user_push(username):
@@ -23,7 +26,6 @@ def count_user_push(username):
             push_count += 1
     return 'Total push count: ' + str(push_count)
 
-
 @app.route('/query_user/<username>', methods=['GET'])
 def query_user_activities(username):
     """
@@ -31,6 +33,8 @@ def query_user_activities(username):
     :param str username
     :returns list
     """
-
     github_endpoint = 'https://api.github.com/users/{}/events/public'.format(username)
     return requests.get(url=github_endpoint).text
+
+if __name__ == '__main__':
+    app.run(host='127.0.0.1', port=3000)
